@@ -133,7 +133,10 @@ public partial class MyDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.TransactionId).HasColumnName("transactionId");
+            entity.Property(e => e.TransactionId)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("transactionId");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Orders)
@@ -214,7 +217,9 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.IsAdmin).HasDefaultValue(false);
             entity.Property(e => e.LoyaltyPoints).HasDefaultValue(0);
-            entity.Property(e => e.Role).HasMaxLength(50);
+            entity.Property(e => e.Role)
+                .HasMaxLength(50)
+                .HasDefaultValue("User");
             entity.Property(e => e.Username).HasMaxLength(100);
         });
 

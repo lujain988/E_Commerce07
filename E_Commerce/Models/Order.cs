@@ -17,7 +17,7 @@ public partial class Order
 
     public int? LoyaltyPoints { get; set; }
 
-    public int? TransactionId { get; set; }
+    public string? TransactionId { get; set; }
 
     public int? ProductId { get; set; }
 
