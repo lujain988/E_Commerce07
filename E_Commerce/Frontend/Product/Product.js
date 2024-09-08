@@ -2,30 +2,35 @@ const itemsPerPage = 6;
 let currentPage = 1;
 let allProducts = [];
 let filteredProducts = [];
-let selectedCategory = "All"; 
+let selectedCategory = "All"; // Default category
 let minPrice = 0;
 let maxPrice = Infinity;
 
 // Load CategoryId from localStorage
-const CategoryId = localStorage.getItem("CategoryId");
 
 // Function to fetch all products
-async function GetAllProduct(category = "All") {
-  let url = `https://localhost:7222/api/Product/${category}`; // Make sure the API endpoint handles the category parameter properly
+async function GetAllProduct() {
+  const CategoryId = localStorage.getItem("categoryID");
+
+  const url = `https://localhost:7222/api/Product`;
+
   try {
+    // Make the API request
     let request = await fetch(url);
     if (!request.ok) {
       throw new Error(`HTTP error! Status: ${request.status}`);
     }
+
+    // Parse the JSON response
     allProducts = await request.json();
 
-    // Initialize filteredProducts
+    // Initialize filteredProducts with all fetched products
     filteredProducts = [...allProducts];
 
-    // Apply initial category and price filter
+    // Apply initial filters (if any)
     applyFilters();
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
   }
 }
 
@@ -75,17 +80,23 @@ function updatePaginationControls() {
 
   let paginationHTML = `
     <ul>
-      <li ${currentPage === 1 ? 'class="disabled"' : ""}><a href="#" onclick="changePage(${currentPage - 1})">Prev</a></li>
+      <li ${
+        currentPage === 1 ? 'class="disabled"' : ""
+      }><a href="#" onclick="changePage(${currentPage - 1})">Prev</a></li>
   `;
 
   for (let i = 1; i <= totalPages; i++) {
     paginationHTML += `
-      <li ${i === currentPage ? 'class="active"' : ""}><a href="#" onclick="changePage(${i})">${i}</a></li>
+      <li ${
+        i === currentPage ? 'class="active"' : ""
+      }><a href="#" onclick="changePage(${i})">${i}</a></li>
     `;
   }
 
   paginationHTML += `
-      <li ${currentPage === totalPages ? 'class="disabled"' : ""}><a href="#" onclick="changePage(${currentPage + 1})">Next</a></li>
+      <li ${
+        currentPage === totalPages ? 'class="disabled"' : ""
+      }><a href="#" onclick="changePage(${currentPage + 1})">Next</a></li>
     </ul>
   `;
 
@@ -94,13 +105,14 @@ function updatePaginationControls() {
 
 // Function to handle page change
 function changePage(page) {
-  if (page < 1 || page > Math.ceil(filteredProducts.length / itemsPerPage)) return;
+  if (page < 1 || page > Math.ceil(filteredProducts.length / itemsPerPage))
+    return;
   currentPage = page;
   renderPage(currentPage);
 }
-
-// Function to handle category click
+debugger;
 function handleCategoryClick(category) {
+  localStorage.removeItem("categoryID");
   selectedCategory = category;
   applyFilters();
 
@@ -113,11 +125,15 @@ function handleCategoryClick(category) {
   }
 }
 
-// Function to apply filters
 async function applyFilters() {
-  console.log("Applying filters:", selectedCategory, minPrice, maxPrice);
+  debugger;
+  const storedCategory = localStorage.getItem("categoryID");
+  const category = storedCategory || selectedCategory;
 
-  let url = `https://localhost:7222/filterOnCategory?category=${encodeURIComponent(selectedCategory)}`;
+  let url = `https://localhost:7222/filterOnCategory?category=${(
+    category
+  )}`;
+
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -136,8 +152,7 @@ async function applyFilters() {
   currentPage = 1; // Reset to the first page
   renderPage(currentPage);
 }
-
-
+applyFilters();
 
 // Function to fetch average rating
 async function fetchAverageRating(productId) {
@@ -149,7 +164,8 @@ async function fetchAverageRating(productId) {
     }
     let data = await response.json();
 
-    let averageRating = data && data.averageRating != null ? data.averageRating : 5;
+    let averageRating =
+      data && data.averageRating != null ? data.averageRating : 5;
     let ratingContainer = document.getElementById(`rating-${productId}`);
     ratingContainer.innerHTML = `<i class="fas fa-star"> Rating: ${averageRating}</i>`;
   } catch (error) {
@@ -157,12 +173,11 @@ async function fetchAverageRating(productId) {
   }
 }
 
-
-
 // Function to get categories
 async function getCategories() {
   const url = `https://localhost:7222/getCategories`;
 
+  try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -179,7 +194,9 @@ async function getCategories() {
     });
 
     console.log(data);
-  
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
 }
 
 // Function to handle filter button click
@@ -203,8 +220,7 @@ function saveToLocalStorage(id) {
   window.location.href = "ProductDetailes.html";
 }
 
-// Initial calls to setup the page
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   getCategories(); // Fetch categories and set up the filters
-  GetAllProduct(); // Fetch all products with default category
+  GetAllProduct("All"); // Fetch all products with the default category "All"
 });

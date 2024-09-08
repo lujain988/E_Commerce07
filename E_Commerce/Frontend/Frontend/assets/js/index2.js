@@ -26,7 +26,7 @@ async function fetchAndDisplayCategories() {
                         <img src="../../Uploads/${category.image}" alt="${category.categoryName}">
                     </div>
                     <h3>${category.categoryName}</h3>
-                 <a onclick="saveToLocalStorage(${category.id})" class="view-all-btn">View All</a> 
+<a onclick="saveToLocalStorage('${category.categoryName}')" class="view-all-btn">View All</a>
                 </div>
             `;
         });
@@ -39,8 +39,8 @@ async function fetchAndDisplayCategories() {
     }
 }
 
-function saveToLocalStorage(id) {
-    localStorage.setItem("CategoryId", id);
+function saveToLocalStorage(categoryName) {
+    localStorage.setItem("categoryID", categoryName);
     window.location.href = "../../../Product/Product.html";
   }
 // Call the function to fetch and display categories
@@ -86,5 +86,8 @@ async function fetchAndDisplayDiscountProducts() {
 }
 
 
-// Call the function to fetch and display discount products
-fetchAndDisplayDiscountProducts();
+document.addEventListener('DOMContentLoaded', () => {
+    fetchAndDisplayCategories(); // Display categories
+    GetAllProduct(localStorage.getItem("categoryName") || "All"); // Display products, fallback to "All" if no CategoryId
+
+});
