@@ -7,13 +7,15 @@ CREATE TABLE Users (
     Email NVARCHAR(100) NOT NULL,
     PasswordHash varbinary(max),
 	PasswordSalt  varbinary(max),
-    Role NVARCHAR(50) CHECK (Role IN ('Admin', 'User')),
+    Role NVARCHAR(50) CHECK (Role IN ('Admin', 'User')) DEFAULT 'User',
     LoyaltyPoints INT DEFAULT 0,
     IsAdmin BIT DEFAULT 0,
     CreatedAt DATETIME DEFAULT GETDATE(),
 	
 	
 );
+ALTER TABLE Users
+ADD CONSTRAINT DF_Users_Role DEFAULT 'User' FOR Role;
 
 
 -- Categories Table
@@ -56,11 +58,12 @@ CREATE TABLE Orders (
     TotalAmount DECIMAL(10, 2) NOT NULL,
     Status NVARCHAR(50) CHECK (Status IN ('Pending', 'Shipped', 'Delivered')),
     LoyaltyPoints INT DEFAULT 0,
-	transactionId int ,
+	transactionId VARCHAR(255) ,
 	ProductId int REFERENCES Products (Id),
 	   Quantity INT 
 
 );
+
 
 CREATE TABLE Payments (
     ID INT PRIMARY KEY IDENTITY(1,1),
@@ -126,3 +129,9 @@ CREATE TABLE ContactUs (
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
+----------- Edited---------------
+ALTER TABLE Orders
+ALTER COLUMN transactionId VARCHAR(255);
+
+ALTER TABLE Users
+ADD CONSTRAINT DF_Users_Role DEFAULT 'User' FOR Role;

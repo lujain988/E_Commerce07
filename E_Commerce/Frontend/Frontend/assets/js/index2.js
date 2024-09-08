@@ -13,7 +13,7 @@ async function fetchAndDisplayCategories() {
             categoriesHTML += `
                 <div class="col-lg-3 col-md-6 text-center category-card">
                     <div class="category-image">
-                        <img src="../../Uploads/${category.image}" alt="${category.categoryName}">
+                        <img src="${category.image}" alt="${category.categoryName}">
                     </div>
                     <h3>${category.categoryName}</h3>
                     <a onclick="saveToLocalStorage('${category.categoryName}')" class="view-all-btn">View All</a>

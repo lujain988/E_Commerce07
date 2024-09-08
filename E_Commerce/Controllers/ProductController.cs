@@ -384,6 +384,7 @@ namespace E_Commerce.Controllers
                     })
                 .Where(p => p.categoryName == category)
                 .ToList();
+            return Ok(filteredProducts);
             //if (string.IsNullOrEmpty(category) || category == "All" || category == "*")
             //{
             //    var productAll = _Db.Products.ToList();
