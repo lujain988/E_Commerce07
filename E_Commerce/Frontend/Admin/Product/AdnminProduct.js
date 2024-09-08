@@ -84,79 +84,107 @@ function getCategoryId(categoryId) {
   localStorage.setItem('categoryid', categoryId);
   window.location.href = 'UpdataCategory.html';
 }
-
 async function deleteReview(reviewId) {
-  if (confirm('Are you sure you want to delete this review?')) {
-    try {
-      const response = await fetch(`https://localhost:7222/api/Product/${reviewId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`https://localhost:7222/api/Product/${reviewId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (response.ok) {
-        alert('Review deleted successfully');
-        fetchReviews(productId);
-      } else {
-        alert('Failed to delete review');
+        if (response.ok) {
+          Swal.fire('Deleted!', 'Review has been deleted.', 'success');
+          fetchReviews(productId);
+        } else {
+          Swal.fire('Error!', 'Failed to delete review.', 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting review:', error);
+        Swal.fire('Error!', 'Error deleting review.', 'error');
       }
-    } catch (error) {
-      console.error('Error deleting review:', error);
-      alert('Error deleting review');
     }
-  }
+  });
 }
 
 async function approveReview(reviewId) {
-  if (confirm('Are you sure you want to approve this review?')) {
-    try {
-      const response = await fetch(`https://localhost:7222/Admin/${reviewId}`, {
-        method: 'PUT',  
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: 'Approved'  
-        }),
-      });
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You want to approve this review?",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, approve it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`https://localhost:7222/Admin/${reviewId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'Approved',
+          }),
+        });
 
-      if (response.ok) {
-        alert('Review approved successfully');
-        fetchReviews(productId); 
-      } else {
-        alert('Failed to approve review');
+        if (response.ok) {
+          Swal.fire('Approved!', 'Review has been approved.', 'success');
+          fetchReviews(productId);
+        } else {
+          Swal.fire('Error!', 'Failed to approve review.', 'error');
+        }
+      } catch (error) {
+        console.error('Error approving review:', error);
+        Swal.fire('Error!', 'Error approving review.', 'error');
       }
-    } catch (error) {
-      console.error('Error approving review:', error);
-      alert('Error approving review');
     }
-  }
+  });
 }
 
-
 async function declineReview(reviewId) {
-  if (confirm('Are you sure you want to decline this review?')) {
-    try {
-      const response = await fetch(`https://localhost:7222/Admin/${reviewId}`, {
-        method: 'PUT',  
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: 'Declined'
-        }),
-      });
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You want to decline this review?",
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, decline it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`https://localhost:7222/Admin/${reviewId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'Declined',
+          }),
+        });
 
-      if (response.ok) {
-        alert('Review declined successfully');
-        fetchReviews(productId); 
-      } else {
-        alert('Failed to declined review');
+        if (response.ok) {
+          Swal.fire('Declined!', 'Review has been declined.', 'success');
+          fetchReviews(productId);
+        } else {
+          Swal.fire('Error!', 'Failed to decline review.', 'error');
+        }
+      } catch (error) {
+        console.error('Error declining review:', error);
+        Swal.fire('Error!', 'Error declining review.', 'error');
       }
-    } catch (error) {
-      console.error('Error approving review:', error);
-      alert('Error approving review');
     }
-  }
+  });
 }

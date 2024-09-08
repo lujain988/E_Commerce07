@@ -34,7 +34,7 @@ async function GetAllProduct() {
   }
 }
 
-// Function to render the current page of products
+
 function renderPage(page) {
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -45,30 +45,48 @@ function renderPage(page) {
 
   pageProducts.forEach((product) => {
     let imageUrl = `${product.image}`;
+  
+    
+    let discountHTML = '';
+    if (product.discount && product.discount > 0) {
+      let discountedPrice = product.price - (product.price * product.discount / 100);
+      discountHTML = `
+        <p class="product-price">
+          <span class="original-price" style="text-decoration: line-through; font-size: 1.3rem;">$${product.price.toFixed(2)}</span> 
+          $${discountedPrice.toFixed(2)} 
+        </p>
+      `;
+    } else {
+      // If no discount, show regular price
+      discountHTML = `<p class="product-price">$${product.price.toFixed(2)}</p>`;
+    }
+    
     let cardHTML = `
       <div class="col-lg-4 col-md-6 text-center">
         <div class="single-product-item">
           <div class="product-image">
-            <a onclick="saveToLocalStorage(${product.id})"><img src="${imageUrl}" alt=""></a>
+            <a   onclick="saveToLocalStorage(${product.id})">
+              <img src="${product.image}" alt="${product.productName}">
+            </a>
+            ${product.discount > 0 ? `<span class="discount-badge">${product.discount}% Off</span>` : ''}
           </div>
           <h3>${product.productName}</h3>
-          <p class="product-price">${product.price}$</p>
-          <div class="product-rating" id="rating-${product.id}">
-            <!-- Rating will be inserted here -->
-          </div>
+          ${discountHTML} 
           <a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
           <br>
-          <a href="#" onclick="saveToLocalStorage(${product.id})" class="see-more-btn" style="color: #ff8c00;">
+           <a href="#" onclick="saveToLocalStorage(${product.id})" class="see-more-btn" style="color: #ff8c00;">
             <i class="fas fa-chevron-right"></i> See More
           </a>
         </div>
       </div>
     `;
+    
+    
     cards.innerHTML += cardHTML;
-
-    fetchAverageRating(product.id);
+  
+    fetchAverageRating(product.id); // Fetch and display the rating for the product
   });
-
+  
   updatePaginationControls();
 }
 

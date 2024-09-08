@@ -344,55 +344,55 @@ namespace E_Commerce.Controllers
         [HttpGet("/filterOnCategory/")]
         public IActionResult Filter(string category)
         {
-            //        if (string.IsNullOrEmpty(category) || category == "All" || category == "*")
-            //{
-            //            var products = _Db.Products
-            //                .Join(_Db.Categories,
-            //                    product => product.CategoryId,
-            //                    category => category.Id,
-            //                    (product, category) => new
-            //                    {
-            //                        id = product.Id,
-            //                        productName = product.ProductName,
-            //                        description = product.Description,
-            //                        price = product.Price,
-            //                        stockQuantity = product.StockQuantity,
-            //                        image = product.Image,
-            //                        discount = product.Discount,
-            //                        categoryName = category.CategoryName
-            //                    })
-            //                .ToList();
-
-            //            return Ok(products);
-            //        }
-
-            //        var filteredProducts = _Db.Products
-            //            .Join(_Db.Categories,
-            //                product => product.CategoryId,
-            //                category => category.Id,
-            //                (product, category) => new
-            //                {
-            //                    id = product.Id,
-            //                    productName = product.ProductName,
-            //                    description = product.Description,
-            //                    price = product.Price,
-            //                    stockQuantity = product.StockQuantity,
-            //                    image = product.Image,
-            //                    discount = product.Discount,
-            //                    categoryName = category.CategoryName,
-            //                    categoryID = category.Id
-            //                })
-            //            .Where(p => p.categoryName == category)
-            //            .ToList();
             if (string.IsNullOrEmpty(category) || category == "All" || category == "*")
             {
-                var productAll = _Db.Products.ToList();
-                return Ok(productAll);
-                
-            }
-            var product = _Db.Products.Where(a => a.Category.CategoryName == category).ToList();
+                var products = _Db.Products
+                    .Join(_Db.Categories,
+                        product => product.CategoryId,
+                        category => category.Id,
+                        (product, category) => new
+                        {
+                            id = product.Id,
+                            productName = product.ProductName,
+                            description = product.Description,
+                            price = product.Price,
+                            stockQuantity = product.StockQuantity,
+                            image = product.Image,
+                            discount = product.Discount,
+                            categoryName = category.CategoryName
+                        })
+                    .ToList();
 
-            return Ok(product);
+                return Ok(products);
+            }
+
+            var filteredProducts = _Db.Products
+                .Join(_Db.Categories,
+                    product => product.CategoryId,
+                    category => category.Id,
+                    (product, category) => new
+                    {
+                        id = product.Id,
+                        productName = product.ProductName,
+                        description = product.Description,
+                        price = product.Price,
+                        stockQuantity = product.StockQuantity,
+                        image = product.Image,
+                        discount = product.Discount,
+                        categoryName = category.CategoryName,
+                        categoryID = category.Id
+                    })
+                .Where(p => p.categoryName == category)
+                .ToList();
+            //if (string.IsNullOrEmpty(category) || category == "All" || category == "*")
+            //{
+            //    var productAll = _Db.Products.ToList();
+            //    return Ok(productAll);
+                
+            //}
+            //var product = _Db.Products.Where(a => a.Category.CategoryName == category).ToList();
+
+            //return Ok(product);
         }
         [HttpGet("/PriceFilter/")]
         public IActionResult GetPrice([FromQuery] decimal minPrice = 0, [FromQuery] decimal maxPrice = decimal.MaxValue)
